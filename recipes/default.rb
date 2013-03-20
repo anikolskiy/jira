@@ -63,7 +63,7 @@ unless FileTest.exists?(node['jira']['install_path'])
     end
   
     execute "install-mysql-connector" do
-      command "cp #{Chef::Config[:file_cache_path]}/mysql-connector-java-5.1.6/mysql-connector-java-5.1.6-bin.jar #{node['jira']['install_path']}/common/lib"
+      command "cp #{Chef::Config[:file_cache_path]}/mysql-connector-java-5.1.6/mysql-connector-java-5.1.6-bin.jar #{node['jira']['install_path']}/lib"
     end
   end
 end
