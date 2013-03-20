@@ -91,10 +91,13 @@ template "#{node['jira']['install_path']}/atlassian-jira/WEB-INF/classes/entitye
   mode 0755
 end
 
-runit_service "jira"
-
 template "#{node['apache']['dir']}/sites-available/jira.conf" do
   source "apache.conf.erb"
+  mode 0644
+end
+
+template "#{node[:jira][:install_path]}/atlassian-jira/WEB-INF/classes/jira-application.properties" do
+  source "jira-application.properties.erb"
   mode 0644
 end
 
