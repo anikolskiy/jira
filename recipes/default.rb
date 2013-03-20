@@ -26,13 +26,15 @@
 #   grant all privileges on jiradb.* to '$jira_user'@'localhost' identified by '$jira_password';
 #   flush privileges;
 
-include_recipe "runit"
-include_recipe "java"
-include_recipe "apache2"
-include_recipe "apache2::mod_rewrite"
-include_recipe "apache2::mod_proxy"
-include_recipe "apache2::mod_proxy_http"
-include_recipe "apache2::mod_ssl"
+if node['jira']['include_apache']
+  include_recipe "runit"
+  include_recipe "java"
+  include_recipe "apache2"
+  include_recipe "apache2::mod_rewrite"
+  include_recipe "apache2::mod_proxy"
+  include_recipe "apache2::mod_proxy_http"
+  include_recipe "apache2::mod_ssl"
+end
 
 unless FileTest.exists?(node['jira']['install_path'])
   remote_file "jira" do
@@ -68,37 +70,15 @@ end
 
 directory node['jira']['install_path'] do
   recursive true
-  owner "www-data"
+  owner node['jira']['run_user']
 end
 
-cookbook_file "#{node['jira']['install_path']}/bin/startup.sh" do
-  source "startup.sh"
-  mode 0755
-end
-  
-cookbook_file "#{node['jira']['install_path']}/bin/catalina.sh" do
-  source "catalina.sh"
-  mode 0755
-end
+if node['jira']['include_apache']
+  template "#{node['apache']['dir']}/sites-available/jira.conf" do
+    source "apache.conf.erb"
+    mode 0644
+    owner "www-data"
+  end
 
-template "#{node['jira']['install_path']}/conf/server.xml" do
-  source "server.xml.erb"
-  mode 0755
+  apache_site "jira.conf"
 end
-  
-template "#{node['jira']['install_path']}/atlassian-jira/WEB-INF/classes/entityengine.xml" do
-  source "entityengine.xml.erb"
-  mode 0755
-end
-
-template "#{node['apache']['dir']}/sites-available/jira.conf" do
-  source "apache.conf.erb"
-  mode 0644
-end
-
-template "#{node[:jira][:install_path]}/atlassian-jira/WEB-INF/classes/jira-application.properties" do
-  source "jira-application.properties.erb"
-  mode 0644
-end
-
-apache_site "jira.conf"
