@@ -73,6 +73,12 @@ template "#{node[:jira][:install_path]}/atlassian-jira/WEB-INF/classes/jira-appl
   mode 0644
 end
 
+template "#{node[:jira][:install_path]}/dbconfig.xml" do
+  source "dbconfig.xml.erb"
+  mode 0600
+  variables node[:jira]
+end
+
 directory node['jira']['install_path'] do
   recursive true
   owner node['jira']['run_user']
