@@ -68,6 +68,11 @@ unless FileTest.exists?(node['jira']['install_path'])
   end
 end
 
+template "#{node[:jira][:install_path]}/atlassian-jira/WEB-INF/classes/jira-application.properties" do
+  source "jira-application.properties.erb"
+  mode 0644
+end
+
 directory node['jira']['install_path'] do
   recursive true
   owner node['jira']['run_user']
