@@ -46,7 +46,7 @@ unless FileTest.exists?(node['jira']['install_path'])
   end
   
   execute "install-jira" do
-    command "mv #{Chef::Config[:file_cache_path]}/atlassian-jira-#{node['jira']['version']} #{node['jira']['install_path']}"
+    command "mv #{Chef::Config[:file_cache_path]}/atlassian-jira-#{node['jira']['version']}-standalone #{node['jira']['install_path']}"
   end
   
   if node['jira']['database'] == "mysql"
