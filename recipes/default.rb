@@ -42,6 +42,11 @@ unless FileTest.exists?(node['jira']['install_path'])
     recursive true
   end
 
+  directory node['jira']['home'] do
+    recursive true
+    owner node['jira']['run_user']
+  end
+
   remote_file "jira" do
     path "#{Chef::Config[:file_cache_path]}/jira.tar.gz"
     source "http://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-#{node['jira']['version']}.tar.gz"
@@ -84,9 +89,8 @@ template "#{node[:jira][:install_path]}/dbconfig.xml" do
   variables node[:jira]
 end
 
-directory node['jira']['install_path'] do
-  recursive true
-  owner node['jira']['run_user']
+execute "untar-jira" do
+  command "chown -R #{node['jira']['run_user']} #{node['jira']['install_path']}"
 end
 
 if node['jira']['include_apache']
