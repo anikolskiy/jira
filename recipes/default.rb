@@ -28,13 +28,14 @@
 
 if node['jira']['include_apache']
   include_recipe "runit"
-  include_recipe "java"
   include_recipe "apache2"
   include_recipe "apache2::mod_rewrite"
   include_recipe "apache2::mod_proxy"
   include_recipe "apache2::mod_proxy_http"
   include_recipe "apache2::mod_ssl"
 end
+
+include_recipe "java"
 
 unless FileTest.exists?(node['jira']['install_path'])
   directory Chef::Config[:file_cache_path] do
