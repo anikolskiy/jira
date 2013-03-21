@@ -37,6 +37,10 @@ if node['jira']['include_apache']
 end
 
 unless FileTest.exists?(node['jira']['install_path'])
+  directory Chef::Config[:file_cache_path] do
+    recursive true
+  end
+
   remote_file "jira" do
     path "#{Chef::Config[:file_cache_path]}/jira.tar.gz"
     source "http://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-#{node['jira']['version']}.tar.gz"
